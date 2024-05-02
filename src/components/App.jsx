@@ -3,6 +3,7 @@ import { useState } from 'react';
 import Statistics from './statistics/statistics';
 import FeedbackOptions from './feedbackOptions/feedbackOption';
 import Section from './section/section';
+import Notification from './notification/notification';
 
 export const App = () => {
   const [state, setState] = useState({
@@ -54,16 +55,19 @@ export const App = () => {
       <Section title="Please leave feedback">
         <FeedbackOptions options={state} onLeaveFeedback={setState} />
       </Section>
-
-      <Section title="Statistics">
-        <Statistics
-          good={good}
-          neutral={neutral}
-          bad={bad}
-          total={total}
-          percentage={percentage}
-        />
-      </Section>
+      {total ? (
+        <Section title="Statistics">
+          <Statistics
+            good={good}
+            neutral={neutral}
+            bad={bad}
+            total={total}
+            percentage={percentage}
+          />
+        </Section>
+      ) : (
+        <Notification message="There is no feedback" />
+      )}
     </div>
   );
 };
