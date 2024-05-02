@@ -1,6 +1,8 @@
 import { useEffect } from 'react';
 import { useState } from 'react';
-import styles from './app.module.css';
+import Statistics from './statistics/statistics';
+import FeedbackOptions from './feedbackOptions/feedbackOption';
+import Section from './section/section';
 
 export const App = () => {
   const [state, setState] = useState({
@@ -11,59 +13,31 @@ export const App = () => {
     percentage: 0,
   });
 
-  const goodFeedback = () => {
-    const good = state.good + 1;
-    setState(prev => {
-      return {
-        ...prev,
-        good,
-      };
-    });
-  };
-
-  const neutralFeedback = () => {
-    const neutral = state.neutral + 1;
-    setState(prev => {
-      return {
-        ...prev,
-        neutral,
-      };
-    });
-  };
-
-  const badFeedback = () => {
-    const bad = state.bad + 1;
-    setState(prev => {
-      return {
-        ...prev,
-        bad,
-      };
-    });
-  };
-
-  const countTotalFeedback = () => {
-    const total = state.good + state.neutral + state.bad;
-    setState(prev => {
-      return {
-        ...prev,
-        total,
-      };
-    });
-  };
-  const countPositiveFeedbackPercentage = () => {
-    const percentage = Math.round((state.good / state.total) * 100, 2);
-    setState(prev => {
-      return {
-        ...prev,
-        percentage,
-      };
-    });
-  };
+  const { good, neutral, bad, total, percentage } = state;
 
   useEffect(() => {
+    const countTotalFeedback = () => {
+      const total = good + neutral + bad;
+      setState(prev => {
+        return {
+          ...prev,
+          total,
+        };
+      });
+    };
+    const countPositiveFeedbackPercentage = () => {
+      const percentage = Math.round((good / total) * 100, 2);
+      setState(prev => {
+        return {
+          ...prev,
+          percentage,
+        };
+      });
+    };
+
     countTotalFeedback();
-    if (state.total) countPositiveFeedbackPercentage();
-  }, [state.good, state.neutral, state.bad]);
+    if (total) countPositiveFeedbackPercentage();
+  }, [good, neutral, bad, total]);
 
   return (
     <div
@@ -72,29 +46,24 @@ export const App = () => {
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
-        alignItems: 'center',
+        alignItems: 'start',
         fontSize: 40,
         color: '#010101',
       }}
     >
-      <h1>Please leave feedback</h1>
-      <div className={styles.container}>
-        <button className={styles.button} onClick={goodFeedback}>
-          Good
-        </button>
-        <button className={styles.button} onClick={neutralFeedback}>
-          Neutral
-        </button>
-        <button className={styles.button} onClick={badFeedback}>
-          Bad
-        </button>
-      </div>
-      <h2>Statistics</h2>
-      <div>Good: {state.good}</div>
-      <div>Neutral: {state.neutral}</div>
-      <div>Bad: {state.bad}</div>
-      <div>Total: {state.total}</div>
-      <div>Positive Feedback: {state.percentage} %</div>
+      <Section title="Please leave feedback">
+        <FeedbackOptions options={state} onLeaveFeedback={setState} />
+      </Section>
+
+      <Section title="Statistics">
+        <Statistics
+          good={good}
+          neutral={neutral}
+          bad={bad}
+          total={total}
+          percentage={percentage}
+        />
+      </Section>
     </div>
   );
 };
