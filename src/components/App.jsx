@@ -11,18 +11,12 @@ export class App extends Component {
     bad: 0,
   };
 
-  total = 0;
-  percentage = 0;
-
   setFeedback = option => {
-    const count = this.state[option] + 1;
     this.setState(prev => {
       return {
-        ...prev,
-        [option]: count,
+        [option]: prev[option] + 1,
       };
     });
-    this.countTotalFeedback();
   };
 
   countTotalFeedback() {
